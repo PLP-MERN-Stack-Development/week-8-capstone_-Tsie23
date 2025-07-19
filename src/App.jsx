@@ -7,6 +7,7 @@ import RegisterModal from './components/RegisterModal';
 import Header from './components/Header';
 import LoadingSpinner from './components/LoadingSpinner';
 import { useAuth } from './hooks/useAuth';
+import api from './services/api';
 
 
 function App() {
@@ -41,9 +42,9 @@ function App() {
   };
 
   const handleRegister = async (formData) => {
-    // You need to implement the actual registration API call here
-    // Example: await api.post('/auth/register', formData);
-    throw new Error('Registration not implemented yet.');
+    // Call backend API to register user
+    const res = await api.post('/auth/register', formData);
+    return res.data;
   };
 
   if (loading) {
