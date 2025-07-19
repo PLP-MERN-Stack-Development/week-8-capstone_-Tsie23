@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { X, Mail, Lock, Eye, EyeOff, LogIn } from 'lucide-react';
 
-function LoginModal({ isOpen, onClose, onLogin }) {
+function LoginModal({ isOpen, onClose, onLogin, onShowRegister }) {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -109,9 +109,16 @@ function LoginModal({ isOpen, onClose, onLogin }) {
         </form>
 
         <div className="mt-6 text-center">
-          <p className="text-gray-400 text-sm">
-            Don't have an account? Contact support to get access.
+          <p className="text-gray-400 text-sm mb-2">
+            Don't have an account?
           </p>
+          <button
+            type="button"
+            onClick={onShowRegister}
+            className="text-blue-400 hover:underline font-semibold"
+          >
+            Register here
+          </button>
         </div>
       </div>
     </div>

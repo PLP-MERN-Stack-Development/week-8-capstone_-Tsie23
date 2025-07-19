@@ -1,13 +1,18 @@
 import React, { useState } from 'react';
+
 import HomePage from './components/HomePage';
 import Dashboard from './components/Dashboard';
 import LoginModal from './components/LoginModal';
+import RegisterModal from './components/RegisterModal';
+import Header from './components/Header';
 import LoadingSpinner from './components/LoadingSpinner';
 import { useAuth } from './hooks/useAuth';
+
 
 function App() {
   const { user, loading, isAuthenticated, login, logout } = useAuth();
   const [currentView, setCurrentView] = useState('home');
+  const [showRegister, setShowRegister] = useState(false);
 
   const handleGetStarted = () => {
     setCurrentView('login');
@@ -17,8 +22,13 @@ function App() {
     setCurrentView('login');
   };
 
+  const handleShowRegister = () => {
+    setShowRegister(true);
+  };
+
   const handleCloseModals = () => {
     setCurrentView('home');
+    setShowRegister(false);
   };
 
   const handleLogin = async (credentials) => {
@@ -30,16 +40,26 @@ function App() {
     }
   };
 
+  const handleRegister = async (formData) => {
+    // You need to implement the actual registration API call here
+    // Example: await api.post('/auth/register', formData);
+    throw new Error('Registration not implemented yet.');
+  };
+
   if (loading) {
     return <LoadingSpinner />;
   }
 
   if (isAuthenticated && user) {
-    return <Dashboard user={user} onLogout={logout} />;
+    return <>
+      <Header user={user} onLogout={logout} />
+      <Dashboard user={user} onLogout={logout} />
+    </>;
   }
 
   return (
     <>
+      <Header user={null} />
       <HomePage 
         onGetStarted={handleGetStarted}
         onLogin={handleShowLogin}
@@ -48,6 +68,12 @@ function App() {
         isOpen={currentView === 'login'}
         onClose={handleCloseModals}
         onLogin={handleLogin}
+        onShowRegister={handleShowRegister}
+      />
+      <RegisterModal
+        isOpen={showRegister}
+        onClose={handleCloseModals}
+        onRegister={handleRegister}
       />
     </>
   );

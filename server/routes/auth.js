@@ -1,13 +1,9 @@
+
 import express from 'express';
 import jwt from 'jsonwebtoken';
 import { body, validationResult } from 'express-validator';
 import User from '../models/User.js';
 import auth from '../middleware/auth.js';
-const express = require('express');
-const jwt = require('jsonwebtoken');
-const { body, validationResult } = require('express-validator');
-const User = require('../models/User');
-const auth = require('../middleware/auth');
 
 const router = express.Router();
 
