@@ -1,13 +1,15 @@
 import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://your-backend-url.railway.app/api';
+// Get API base URL from environment variable
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
-// Create axios instance
+// Create axios instance with base configuration
 const api = axios.create({
   baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
+  timeout: 10000, // 10 second timeout
 });
 
 // Add auth token to requests
@@ -19,14 +21,34 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// Handle auth errors
+// Handle auth errors and token refresh
 api.interceptors.response.use(
   (response) => response,
   (error) => {
+    // Handle network errors
+    if (!error.response) {
+      console.error('Network error:', error.message);
+      return Promise.reject({
+        response: {
+          data: {
+            error: {
+              message: 'Network error. Please check your connection.',
+              code: 'NETWORK_ERROR'
+            }
+          }
+        }
+      });
+    }
+
+    // Handle authentication errors
     if (error.response?.status === 401) {
       localStorage.removeItem('token');
-      window.location.href = '/';
+      // Only redirect if we're not already on the home page
+      if (window.location.pathname !== '/') {
+        window.location.href = '/';
+      }
     }
+
     return Promise.reject(error);
   }
 );
@@ -112,6 +134,14 @@ export const usersAPI = {
   
   getStats: async () => {
     const response = await api.get('/users/stats');
+    return response.data;
+  }
+};
+
+// Health check API
+export const healthAPI = {
+  check: async () => {
+    const response = await api.get('/health');
     return response.data;
   }
 };
